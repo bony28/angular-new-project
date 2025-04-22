@@ -66,7 +66,7 @@ export class LoginComponent {
         'token',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IlN1cGVyVXNlciIsImlhdCI6MTY4NTY1NzYwMCwiZXhwIjoxNzE3MTkzNjAwfQ.'
       );
-      this.router.navigate(['/main']);
+      this.router.navigate(['/main']); //*
     } else {
       localStorage.clear();
     }
