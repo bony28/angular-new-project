@@ -7,11 +7,14 @@ import { Product } from '../../models/models.interfaces';
     <div
       style="flex: 1 1 calc(45% - 1rem); padding: 1rem; background-color: #fff; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);"
     >
-      <label>
+      <label
+        style="font-size: 20px;font-weight: 100;font-family: sans-serif;cursor: pointer;"
+      >
         <input
           type="checkbox"
           [checked]="product!.isChecked"
           (change)="onChangeCheck(product!.id, $event)"
+          style="cursor: pointer;"
         />
         {{ product!.title }}
       </label>

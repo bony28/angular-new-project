@@ -5,7 +5,9 @@ import { Product } from '../../models/models.interfaces';
   selector: 'selected-products-component',
   template: `
     @if (product.isChecked) {
-    <li>{{ product.title }}</li>
+    <li style="font-size: 20px;font-family: sans-serif;">
+      {{ product.title }}
+    </li>
     }
   `,
 })
