@@ -1,13 +1,24 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, Pipe, signal } from '@angular/core';
 import { Product } from '../../models/models.interfaces';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductListComponent } from './productlist.component';
 import { SelectredProductsComponent } from './selectedproducts.component';
+import { CommonModule } from '@angular/common';
+import { CapitalizeWordsPipePipe } from '../../temp/capitalize-words-pipe.pipe';
+import { pipe } from 'rxjs';
+import { LowerCaseWordsPipePipe } from '../../temp/lower-case-words-pipe.pipe';
 
 @Component({
   selector: 'app-productspage',
-  imports: [FormsModule, ProductListComponent, SelectredProductsComponent],
+  imports: [
+    FormsModule,
+    ProductListComponent,
+    SelectredProductsComponent,
+    CommonModule,
+    CapitalizeWordsPipePipe,
+    LowerCaseWordsPipePipe,
+  ],
   template: `
     <div style="padding: 2rem;">
       <input
@@ -34,7 +45,9 @@ import { SelectredProductsComponent } from './selectedproducts.component';
         </button>
       </div>
 
-      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Products</h2>
+      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">
+        {{ 'Products' | lowerCaseWordsPipe }}
+      </h2>
       <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
         @for (item of filteredProducts(); track item.id) {
         <product-component
@@ -42,12 +55,16 @@ import { SelectredProductsComponent } from './selectedproducts.component';
           [filteredProducts]="filteredProducts()"
           [products]="products()"
           (productsChange)="handleProductUpdate($event)"
+          [ngStyle]="{
+            color: 'black',
+            'text-decoration': item.isChecked ? 'line-through' : 'none'
+          }"
         ></product-component>
         }
       </div>
 
       <div style="margin-top: 2rem;">
-        <h2>Selected Products</h2>
+        <h2>{{ 'Selected Products' | capitalizeWordsPipe }}</h2>
         <ul>
           @for (item of filteredProducts(); track item.id) {
           <selected-products-component

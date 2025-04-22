@@ -6,4 +6,5 @@ export interface Product {
   category: string;
   image: string;
   isChecked: boolean;
+  count: number;
 }

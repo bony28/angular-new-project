@@ -1,45 +1,110 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CartserviceService } from '../../service/cartservice.service';
-import { JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-cart',
-  imports: [],
+  imports: [CommonModule],
   template: `
-    @for (item of cartService.cartItems(); track item.id) {
-    <div style="flex: 1;padding: 10px;">
-      <div>
+    <div
+      style="
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+  "
+    >
+      @for (item of cartService.cartItems(); track item.id) {
+      <div
+        style="
+        flex: 1 1 250px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      "
+      >
         <img
           [src]="item.image"
           alt="Image"
-          style="height: 120px; width: 150px; object-fit: cover; border-radius: 4px;"
+          style="
+          height: 140px;
+          width: 160px;
+          object-fit: cover;
+          border-radius: 6px;
+          margin-bottom: 12px;
+        "
         />
-        <p style="font-size: 14px; font-weight: 600; margin: 8px 0 4px;">
+        <p
+          style="font-size: 15px; font-weight: 600; text-align: center; margin: 4px 0;"
+        >
           {{ item.title }}
         </p>
-        <p style="color: #4caf50; font-weight: 500; margin-bottom: 8px;">
-          {{ item.price }}
+        <p
+          style="color: #4caf50; font-weight: 600; font-size: 14px; margin: 4px 0;"
+        >
+          ₹{{ item.price }}
         </p>
-        <div>
+        <p style="font-size: 13px; color: #555; margin: 4px 0;">
+          Quantity: <strong>{{ item.count }}</strong>
+        </p>
+
+        <div style="margin-top: auto; display: flex; gap: 0.5rem;">
+          <button
+            (click)="cartService.handleAddToCart(item)"
+            style="
+            border: none;
+            background-color: #1976d2;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+          "
+            [ngStyle]="{
+              'background-color': item.count === 5 ? 'grey' : 'blue'
+            }"
+          >
+            + Add one more
+          </button>
           <button
             (click)="cartService.handleRemoveFromCart(item.id)"
             style="
-          border: none;
-          background-color: #e53935;
-          color: white;
-          padding: 8px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-        "
+            border: none;
+            background-color: #d32f2f;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: background-color 0.2s;
+          "
           >
-            Remove
+            − Remove
           </button>
         </div>
       </div>
+      }
     </div>
-    }
-    <div>Total: {{ total() }}</div>
+
+    <div
+      style="
+    margin-top: 1.5rem;
+    text-align: right;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  "
+    >
+      Total: ₹{{ total() }}
+    </div>
   `,
   styles: ``,
 })
@@ -48,8 +113,8 @@ export class CartComponent {
   total = computed(() => {
     let total = 0;
     for (const item of this.cartService.cartItems()) {
-      total += total + item.price;
+      total += total + item.price * item.count;
     }
-    return total;
+    return total.toFixed(2);
   });
 }
