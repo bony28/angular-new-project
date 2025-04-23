@@ -6,8 +6,9 @@ import { ProductListComponent } from './productlist.component';
 import { SelectredProductsComponent } from './selectedproducts.component';
 import { CommonModule } from '@angular/common';
 import { CapitalizeWordsPipePipe } from '../../temp/capitalize-words-pipe.pipe';
-import { pipe } from 'rxjs';
+import { forkJoin, pipe } from 'rxjs';
 import { LowerCaseWordsPipePipe } from '../../temp/lower-case-words-pipe.pipe';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-productspage',
@@ -80,6 +81,8 @@ import { LowerCaseWordsPipePipe } from '../../temp/lower-case-words-pipe.pipe';
 export class ProductspageComponent {
   products = signal<Product[]>([]);
   filteredProducts = signal<Product[]>([]);
+  category = signal<string[]>([]);
+  featuredProduct = signal<Product | null>(null);
 
   router = inject(Router);
 
@@ -90,16 +93,26 @@ export class ProductspageComponent {
     this.filteredProducts.set(updated.filtered);
   }
 
-  async ngOnInit() {
-    const res = await fetch('https://fakestoreapi.com/products');
+  constructor(private http: HttpClient) {}
 
-    const data = await res.json();
-    const newData = data.map((x: Product) => ({
-      ...x,
-      isChecked: false,
-    }));
-    this.products.set(newData);
-    this.filteredProducts.set(newData);
+  ngOnInit() {
+    forkJoin({
+      products: this.http.get<Product[]>('https://fakestoreapi.com/products'),
+      categories: this.http.get<string[]>(
+        'https://fakestoreapi.com/products/categories'
+      ),
+      featured: this.http.get<Product>('https://fakestoreapi.com/products/1'),
+    }).subscribe(({ products, categories, featured }) => {
+      const newProducts = products.map((x) => ({
+        ...x,
+        isChecked: false,
+      }));
+
+      this.products.set(newProducts);
+      this.filteredProducts.set(newProducts);
+      this.category.set(categories);
+      this.featuredProduct.set(featured);
+    });
   }
 
   handleSearch(input: string) {
