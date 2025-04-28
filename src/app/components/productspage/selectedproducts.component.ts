@@ -3,13 +3,7 @@ import { Product } from '../../models/models.interfaces';
 
 @Component({
   selector: 'selected-products-component',
-  template: `
-    @if (product.isChecked) {
-    <li style="font-size: 20px;font-family: sans-serif;">
-      {{ product.title }}
-    </li>
-    }
-  `,
+  templateUrl: './selectedproducts.component.html',
 })
 export class SelectredProductsComponent {
   @Input() product!: Product;
